@@ -1,0 +1,11 @@
+<svg width="500" height="180" viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Testo -->
+  <text x="50%" y="90" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="48" font-weight="700" letter-spacing="8" fill="#111111">
+        XALV<tspan fill="#2563EB">AUTO</tspan>
+  </text>
+
+  <!-- Silhouette auto sotto -->
+  <path d="M100 120 C170 80, 330 80, 400 120" stroke="#2563EB" stroke-width="5" fill="none" stroke-linecap="round"></path>
+
+</svg>
