@@ -1,48 +1,67 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import { FaUser } from 'react-icons/fa';  // icona persona da react-icons
-import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from '../assets/logo.svg';
+import { useState } from "react";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import logo from "../assets/logo.svg";
 
-function BasicExample() {
+function NavBar() {
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log("Ricerca:", search);
+  };
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" bg="light" className="shadow-sm">
       <Container>
-        <Navbar.Brand href="#home">
-          <img src={logo} alt="Logo" width="150" />
+        {/* Logo */}
+        <Navbar.Brand as={Link} to="/">
+          <img src={logo} alt="XalvAuto Logo" width="130" />
         </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
         <Navbar.Collapse id="basic-navbar-nav">
+          {/* Link principali */}
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Auto</Nav.Link>
+            <Nav.Link as={Link} to="/">
+              Home
+            </Nav.Link>
+            <Nav.Link as={Link} to="/auto">
+              Auto
+            </Nav.Link>
           </Nav>
 
-          {/* Icona persona */}
-          <Nav className="align-items-center me-3">
-            <Nav.Link href="#login">
+          {/* Icona utente */}
+          <Nav className="d-flex align-items-center me-3">
+            <Nav.Link as={Link} to="/login">
               <FaUser size={22} />
             </Nav.Link>
           </Nav>
 
-          {/* Barra ricerca */}
-          <Form className="d-flex" role="search" onSubmit={e => e.preventDefault()}>
+          {/* Barra di ricerca */}
+          <Form className="d-flex" role="search" onSubmit={handleSearch}>
             <Form.Control
               type="search"
               placeholder="Cerca auto..."
               className="me-2"
-              aria-label="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-            <Button variant="outline-primary" type="submit">Cerca</Button>
-          </Form>
 
+            <Button variant="outline-primary" type="submit">
+              Cerca
+            </Button>
+          </Form>
         </Navbar.Collapse>
       </Container>
     </Navbar>
   );
 }
 
-export default BasicExample;
+export default NavBar;
