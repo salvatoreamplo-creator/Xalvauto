@@ -44,20 +44,10 @@ function NavBar() {
             </Nav.Link>
           </Nav>
 
-          {/* Barra di ricerca */}
-          <Form className="d-flex" role="search" onSubmit={handleSearch}>
-            <Form.Control
-              type="search"
-              placeholder="Cerca auto..."
-              className="me-2"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+          
 
-            <Button variant="outline-primary" type="submit">
-              Cerca
-            </Button>
-          </Form>
+            
+          
         </Navbar.Collapse>
       </Container>
     </Navbar>
