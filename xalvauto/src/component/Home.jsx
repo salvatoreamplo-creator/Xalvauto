@@ -10,6 +10,7 @@ import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import ReviewsSection from "./ReviewsSection";
+import Hero from "./Hero";
 
 function Home() {
   const [auto, setAuto] = useState([]);
@@ -30,17 +31,7 @@ function Home() {
 
   return (
     <>
-      {/* HERO SECTION */}
-      <section className="bg-dark text-white py-5">
-        <Container className="text-center">
-          <h1 className="display-4 fw-bold">Trova la tua prossima auto</h1>
-          <p className="lead">Nuove e usate garantite da XalvAuto</p>
-
-          <Button as={Link} to="/auto" variant="primary" size="lg">
-            Sfoglia il catalogo
-          </Button>
-        </Container>
-      </section>
+      <Hero />
 
       {/* RICERCA VELOCE */}
       <section className="py-5 bg-light">
@@ -118,9 +109,7 @@ function Home() {
                     </Card.Title>
 
                     <Card.Text>Anno: {a.anno}</Card.Text>
-
                     <Card.Text>Chilometri: {a.chilometri} km</Card.Text>
-
                     <Card.Text className="fw-bold">€ {a.prezzo}</Card.Text>
 
                     <Button
@@ -144,6 +133,7 @@ function Home() {
           </Button>
         </div>
       </Container>
+
       <ReviewsSection />
     </>
   );

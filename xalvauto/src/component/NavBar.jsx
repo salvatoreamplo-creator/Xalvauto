@@ -1,21 +1,11 @@
-import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo.svg";
 
 function NavBar() {
-  const [search, setSearch] = useState("");
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log("Ricerca:", search);
-  };
-
   return (
     <Navbar expand="lg" bg="light" className="shadow-sm">
       <Container>
@@ -32,22 +22,21 @@ function NavBar() {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
+
             <Nav.Link as={Link} to="/auto">
               Auto
+            </Nav.Link>
+            <Nav.Link as={Link} to="/noleggio">
+              Noleggio
             </Nav.Link>
           </Nav>
 
           {/* Icona utente */}
-          <Nav className="d-flex align-items-center me-3">
+          <Nav className="d-flex align-items-center">
             <Nav.Link as={Link} to="/login">
               <FaUser size={22} />
             </Nav.Link>
           </Nav>
-
-          
-
-            
-          
         </Navbar.Collapse>
       </Container>
     </Navbar>

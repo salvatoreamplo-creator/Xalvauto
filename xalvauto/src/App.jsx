@@ -7,6 +7,7 @@ import AutoDetail from "./component/AutoDetail";
 import LoginPage from "./component/LoginPage";
 import Register from "./component/Register";
 import Home from "./component/Home";
+import Noleggio from "./component/Noleggio";
 import "./App.css";
 
 function App() {
@@ -15,11 +16,12 @@ function App() {
       <NavBar />
 
       <Routes>
-       <Route path="/auto" element={<Auto />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/auto" element={<Auto />} />
         <Route path="/auto/:id" element={<AutoDetail />} />
+        <Route path="/noleggio" element={<Noleggio />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Home />} />
       </Routes>
 
       <Footer />
