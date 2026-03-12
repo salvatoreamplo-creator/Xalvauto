@@ -84,15 +84,13 @@ function Noleggio() {
                   </Card.Title>
 
                   <Card.Text className="mb-1">
-                    <strong>Anno:</strong> {auto.anno}
-                  </Card.Text>
-
-                  <Card.Text className="mb-1">
-                    <strong>Prezzo giornaliero:</strong> € {auto.prezzoGiornaliero}
+                    <strong>Prezzo giornaliero:</strong> €{" "}
+                    {auto.prezzoGiornaliero}
                   </Card.Text>
 
                   <Card.Text className="mb-3">
-                    <strong>Prezzo settimanale:</strong> € {auto.prezzoSettimanale}
+                    <strong>Prezzo settimanale:</strong> €{" "}
+                    {auto.prezzoSettimanale}
                   </Card.Text>
 
                   <Button
