@@ -3,7 +3,6 @@ package salvoamplo.xalvautobe.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "auto")
 public class Auto {
 
     @Id
@@ -12,16 +11,24 @@ public class Auto {
 
     private String marca;
     private String modello;
+
     private int anno;
+
     private double prezzo;
+
     private int chilometri;
+
+    private int cilindrata;
+
+    @Enumerated(EnumType.STRING)
+    private Carburante carburante;
+
+    private String descrizione;
+
     private String immagine;
 
     @Enumerated(EnumType.STRING)
     private CondizioneAuto condizione;
-
-    @Column(length = 2000)
-    private String descrizione;
 
     public Auto() {
     }
@@ -74,6 +81,30 @@ public class Auto {
         this.chilometri = chilometri;
     }
 
+    public int getCilindrata() {
+        return cilindrata;
+    }
+
+    public void setCilindrata(int cilindrata) {
+        this.cilindrata = cilindrata;
+    }
+
+    public Carburante getCarburante() {
+        return carburante;
+    }
+
+    public void setCarburante(Carburante carburante) {
+        this.carburante = carburante;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
     public String getImmagine() {
         return immagine;
     }
@@ -88,13 +119,5 @@ public class Auto {
 
     public void setCondizione(CondizioneAuto condizione) {
         this.condizione = condizione;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
     }
 }
