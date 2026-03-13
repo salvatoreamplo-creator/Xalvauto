@@ -8,6 +8,8 @@ import LoginPage from "./component/LoginPage";
 import Register from "./component/Register";
 import Home from "./component/Home";
 import Noleggio from "./component/Noleggio";
+import AdminDashboard from "./component/AdminDashboard";
+import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
 import "./App.css";
 
 function App() {
@@ -20,6 +22,14 @@ function App() {
         <Route path="/auto" element={<Auto />} />
         <Route path="/auto/:id" element={<AutoDetail />} />
         <Route path="/noleggio" element={<Noleggio />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          }
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
       </Routes>
