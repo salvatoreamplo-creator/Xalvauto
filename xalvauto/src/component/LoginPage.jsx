@@ -12,11 +12,13 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errore, setErrore] = useState("");
+  const [messaggio, setMessaggio] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrore("");
+    setMessaggio("");
     setLoading(true);
 
     try {
@@ -38,11 +40,12 @@ function LoginPage() {
       const data = await response.json();
 
       localStorage.setItem("token", data.token);
+      setMessaggio("Login effettuato con successo!");
 
-      navigate("/admin");
+      navigate("/");
     } catch (err) {
       console.error(err);
-      setErrore("Credenziali non valide");
+      setErrore("Email o password non valide.");
     } finally {
       setLoading(false);
     }
@@ -55,12 +58,14 @@ function LoginPage() {
           <h3 className="text-center mb-4">Login Admin</h3>
 
           {errore && <Alert variant="danger">{errore}</Alert>}
+          {messaggio && <Alert variant="success">{messaggio}</Alert>}
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
+                placeholder="Inserisci la tua email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -71,13 +76,19 @@ function LoginPage() {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                placeholder="Inserisci la password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </Form.Group>
 
-            <Button type="submit" variant="dark" className="w-100" disabled={loading}>
+            <Button
+              type="submit"
+              variant="dark"
+              className="w-100"
+              disabled={loading}
+            >
               {loading ? "Accesso..." : "Accedi"}
             </Button>
           </Form>

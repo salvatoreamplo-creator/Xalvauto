@@ -12,6 +12,8 @@ import Table from "react-bootstrap/Table";
 import Badge from "react-bootstrap/Badge";
 
 function AdminDashboard() {
+  const token = localStorage.getItem("token");
+
   const [messaggio, setMessaggio] = useState("");
   const [errore, setErrore] = useState("");
 
@@ -101,6 +103,9 @@ function AdminDashboard() {
 
       const response = await fetch("http://localhost:8080/auto/upload", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -137,6 +142,9 @@ function AdminDashboard() {
 
       const response = await fetch("http://localhost:8080/noleggio/upload", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -163,6 +171,9 @@ function AdminDashboard() {
     try {
       const response = await fetch(`http://localhost:8080/auto/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
@@ -184,6 +195,9 @@ function AdminDashboard() {
     try {
       const response = await fetch(`http://localhost:8080/noleggio/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
