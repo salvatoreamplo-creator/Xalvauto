@@ -12,26 +12,47 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errore, setErrore] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrore("");
+    setLoading(true);
 
-    if (email === "admin@xalvauto.com" && password === "admin123") {
-      localStorage.setItem("isAdmin", "true");
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Credenziali non valide");
+      }
+
+      const data = await response.json();
+
+      localStorage.setItem("token", data.token);
+
       navigate("/admin");
-      return;
+    } catch (err) {
+      console.error(err);
+      setErrore("Credenziali non valide");
+    } finally {
+      setLoading(false);
     }
-
-    localStorage.removeItem("isAdmin");
-    setErrore("Credenziali non valide");
   };
 
   return (
     <Container className="my-5 d-flex justify-content-center">
       <Card style={{ width: "420px" }} className="shadow-sm">
         <Card.Body>
-          <h3 className="text-center mb-4">Login</h3>
+          <h3 className="text-center mb-4">Login Admin</h3>
 
           {errore && <Alert variant="danger">{errore}</Alert>}
 
@@ -56,8 +77,8 @@ function LoginPage() {
               />
             </Form.Group>
 
-            <Button type="submit" variant="dark" className="w-100">
-              Accedi
+            <Button type="submit" variant="dark" className="w-100" disabled={loading}>
+              {loading ? "Accesso..." : "Accedi"}
             </Button>
           </Form>
         </Card.Body>
