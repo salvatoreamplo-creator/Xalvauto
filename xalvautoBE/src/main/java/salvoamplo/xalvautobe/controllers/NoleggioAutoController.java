@@ -21,36 +21,18 @@ public class NoleggioAutoController {
     private CloudinaryService cloudinaryService;
 
     @GetMapping("")
-    public List<NoleggioAuto> getAllNoleggioAuto(
-            @RequestParam(required = false) Boolean disponibile,
-            @RequestParam(required = false) String marca
-    ) {
-        if (disponibile != null && marca != null) {
-            return noleggioAutoRepository.findAll().stream()
-                    .filter(a -> a.isDisponibile() == disponibile)
-                    .filter(a -> a.getMarca().toLowerCase().contains(marca.toLowerCase()))
-                    .toList();
-        }
-
-        if (disponibile != null) {
-            return noleggioAutoRepository.findByDisponibile(disponibile);
-        }
-
-        if (marca != null) {
-            return noleggioAutoRepository.findByMarcaContainingIgnoreCase(marca);
-        }
-
+    public List<NoleggioAuto> getAllNoleggio() {
         return noleggioAutoRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public NoleggioAuto getNoleggioAutoById(@PathVariable Long id) {
+    public NoleggioAuto getNoleggioById(@PathVariable Long id) {
         return noleggioAutoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Auto a noleggio non trovata"));
     }
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
-    public NoleggioAuto createNoleggioAuto(
+    public NoleggioAuto createNoleggio(
             @RequestParam("marca") String marca,
             @RequestParam("modello") String modello,
             @RequestParam("prezzoGiornaliero") double prezzoGiornaliero,
@@ -72,11 +54,21 @@ public class NoleggioAutoController {
         return noleggioAutoRepository.save(auto);
     }
 
+    @PatchMapping("/{id}/toggle-disponibile")
+    public NoleggioAuto toggleDisponibile(@PathVariable Long id) {
+        NoleggioAuto auto = noleggioAutoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Auto non trovata"));
+
+        auto.setDisponibile(!auto.isDisponibile());
+
+        return noleggioAutoRepository.save(auto);
+    }
+
     @DeleteMapping("/{id}")
-    public void deleteNoleggioAuto(@PathVariable Long id) {
-        NoleggioAuto found = noleggioAutoRepository.findById(id)
+    public void deleteNoleggio(@PathVariable Long id) {
+        NoleggioAuto auto = noleggioAutoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Auto a noleggio non trovata"));
 
-        noleggioAutoRepository.delete(found);
+        noleggioAutoRepository.delete(auto);
     }
 }

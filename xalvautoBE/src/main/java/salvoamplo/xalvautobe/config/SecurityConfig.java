@@ -44,6 +44,7 @@ public class SecurityConfig {
 
                         // NOLEGGIO admin
                         .requestMatchers(HttpMethod.POST, "/noleggio/upload").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/noleggio/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/noleggio/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()

@@ -22,6 +22,9 @@ function AdminDashboard() {
 
   const [editingId, setEditingId] = useState(null);
 
+  // =========================
+  // STATE AUTO IN VENDITA
+  // =========================
   const [marca, setMarca] = useState("");
   const [modello, setModello] = useState("");
   const [anno, setAnno] = useState("");
@@ -33,6 +36,9 @@ function AdminDashboard() {
   const [condizione, setCondizione] = useState("USATA");
   const [immagine, setImmagine] = useState(null);
 
+  // =========================
+  // STATE AUTO A NOLEGGIO
+  // =========================
   const [marcaNoleggio, setMarcaNoleggio] = useState("");
   const [modelloNoleggio, setModelloNoleggio] = useState("");
   const [prezzoGiornaliero, setPrezzoGiornaliero] = useState("");
@@ -43,6 +49,15 @@ function AdminDashboard() {
   const [loadingVendita, setLoadingVendita] = useState(false);
   const [loadingNoleggio, setLoadingNoleggio] = useState(false);
 
+  const authHeaders = token
+    ? {
+        Authorization: `Bearer ${token}`,
+      }
+    : {};
+
+  // =========================
+  // FETCH DATI
+  // =========================
   const fetchAutoVendita = async () => {
     try {
       const response = await fetch("http://localhost:8080/auto");
@@ -50,6 +65,7 @@ function AdminDashboard() {
       setAutoVendita(data);
     } catch (err) {
       console.error(err);
+      setErrore("Errore nel caricamento delle auto in vendita.");
     }
   };
 
@@ -60,6 +76,7 @@ function AdminDashboard() {
       setAutoNoleggio(data);
     } catch (err) {
       console.error(err);
+      setErrore("Errore nel caricamento delle auto a noleggio.");
     }
   };
 
@@ -68,6 +85,9 @@ function AdminDashboard() {
     fetchAutoNoleggio();
   }, []);
 
+  // =========================
+  // RESET FORM
+  // =========================
   const resetVendita = () => {
     setEditingId(null);
     setMarca("");
@@ -91,6 +111,9 @@ function AdminDashboard() {
     setImmagineNoleggio(null);
   };
 
+  // =========================
+  // MODIFICA AUTO VENDITA
+  // =========================
   const handleEditVendita = (auto) => {
     setEditingId(auto.id);
     setMarca(auto.marca);
@@ -106,6 +129,9 @@ function AdminDashboard() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // =========================
+  // SUBMIT AUTO VENDITA
+  // =========================
   const handleSubmitVendita = async (e) => {
     e.preventDefault();
     setMessaggio("");
@@ -129,14 +155,17 @@ function AdminDashboard() {
           immagine: autoAttuale?.immagine || "",
         };
 
-        const response = await fetch(`http://localhost:8080/auto/${editingId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `http://localhost:8080/auto/${editingId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...authHeaders,
+            },
+            body: JSON.stringify(body),
           },
-          body: JSON.stringify(body),
-        });
+        );
 
         if (!response.ok) {
           throw new Error("Errore durante la modifica dell'auto");
@@ -162,7 +191,7 @@ function AdminDashboard() {
         const response = await fetch("http://localhost:8080/auto/upload", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`,
+            ...authHeaders,
           },
           body: formData,
         });
@@ -181,13 +210,16 @@ function AdminDashboard() {
       setErrore(
         editingId
           ? "Non sono riuscito a modificare l'auto."
-          : "Non sono riuscito ad aggiungere l'auto in vendita."
+          : "Non sono riuscito ad aggiungere l'auto in vendita.",
       );
     } finally {
       setLoadingVendita(false);
     }
   };
 
+  // =========================
+  // SUBMIT AUTO NOLEGGIO
+  // =========================
   const handleSubmitNoleggio = async (e) => {
     e.preventDefault();
     setMessaggio("");
@@ -206,7 +238,7 @@ function AdminDashboard() {
       const response = await fetch("http://localhost:8080/noleggio/upload", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...authHeaders,
         },
         body: formData,
       });
@@ -227,6 +259,9 @@ function AdminDashboard() {
     }
   };
 
+  // =========================
+  // DELETE AUTO VENDITA
+  // =========================
   const handleDeleteVendita = async (id) => {
     setMessaggio("");
     setErrore("");
@@ -235,7 +270,7 @@ function AdminDashboard() {
       const response = await fetch(`http://localhost:8080/auto/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...authHeaders,
         },
       });
 
@@ -251,6 +286,9 @@ function AdminDashboard() {
     }
   };
 
+  // =========================
+  // DELETE AUTO NOLEGGIO
+  // =========================
   const handleDeleteNoleggio = async (id) => {
     setMessaggio("");
     setErrore("");
@@ -259,7 +297,7 @@ function AdminDashboard() {
       const response = await fetch(`http://localhost:8080/noleggio/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
+          ...authHeaders,
         },
       });
 
@@ -275,6 +313,44 @@ function AdminDashboard() {
     }
   };
 
+  // =========================
+  // TOGGLE DISPONIBILITÀ
+  // =========================
+  const toggleDisponibile = async (id) => {
+    setMessaggio("");
+    setErrore("");
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/noleggio/${id}/toggle-disponibile`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Errore cambio disponibilità");
+      }
+
+      const data = await response.json();
+
+      setMessaggio(
+        data.disponibile
+          ? "Auto segnata come disponibile."
+          : "Auto segnata come non disponibile.",
+      );
+
+      fetchAutoNoleggio();
+    } catch (err) {
+      console.error(err);
+      setErrore("Non sono riuscito a cambiare la disponibilità.");
+    }
+  };
+
   return (
     <Container className="my-5">
       <h2 className="text-center mb-4">Dashboard Admin</h2>
@@ -287,7 +363,9 @@ function AdminDashboard() {
           <Card className="shadow-sm mb-4">
             <Card.Body>
               <h4 className="mb-4">
-                {editingId ? "Modifica auto in vendita" : "Inserisci auto in vendita"}
+                {editingId
+                  ? "Modifica auto in vendita"
+                  : "Inserisci auto in vendita"}
               </h4>
 
               <Form onSubmit={handleSubmitVendita}>
@@ -423,16 +501,24 @@ function AdminDashboard() {
                 </Row>
 
                 <div className="mt-4 d-flex gap-2">
-                  <Button type="submit" variant="dark" disabled={loadingVendita}>
+                  <Button
+                    type="submit"
+                    variant="dark"
+                    disabled={loadingVendita}
+                  >
                     {loadingVendita
                       ? "Salvataggio..."
                       : editingId
-                      ? "Salva modifiche"
-                      : "Aggiungi auto"}
+                        ? "Salva modifiche"
+                        : "Aggiungi auto"}
                   </Button>
 
                   {editingId && (
-                    <Button type="button" variant="secondary" onClick={resetVendita}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={resetVendita}
+                    >
                       Annulla modifica
                     </Button>
                   )}
@@ -470,7 +556,11 @@ function AdminDashboard() {
                       <td>{a.cilindrata} cc</td>
                       <td>{a.carburante}</td>
                       <td>
-                        <Badge bg={a.condizione === "NUOVA" ? "success" : "secondary"}>
+                        <Badge
+                          bg={
+                            a.condizione === "NUOVA" ? "success" : "secondary"
+                          }
+                        >
                           {a.condizione === "NUOVA" ? "Nuova" : "Usata"}
                         </Badge>
                       </td>
@@ -559,7 +649,9 @@ function AdminDashboard() {
                       <Form.Label>Disponibilità</Form.Label>
                       <Form.Select
                         value={disponibile ? "true" : "false"}
-                        onChange={(e) => setDisponibile(e.target.value === "true")}
+                        onChange={(e) =>
+                          setDisponibile(e.target.value === "true")
+                        }
                       >
                         <option value="true">Disponibile</option>
                         <option value="false">Non disponibile</option>
@@ -581,8 +673,14 @@ function AdminDashboard() {
                 </Row>
 
                 <div className="mt-4">
-                  <Button type="submit" variant="dark" disabled={loadingNoleggio}>
-                    {loadingNoleggio ? "Salvataggio..." : "Aggiungi auto a noleggio"}
+                  <Button
+                    type="submit"
+                    variant="dark"
+                    disabled={loadingNoleggio}
+                  >
+                    {loadingNoleggio
+                      ? "Salvataggio..."
+                      : "Aggiungi auto a noleggio"}
                   </Button>
                 </div>
               </Form>
@@ -614,10 +712,18 @@ function AdminDashboard() {
                       <td>€ {a.prezzoGiornaliero}</td>
                       <td>€ {a.prezzoSettimanale}</td>
                       <td>
-                        <Badge bg={a.disponibile ? "success" : "secondary"}>
+                        <Badge
+                          pill
+                          bg={a.disponibile ? "success" : "danger"}
+                          className="px-3 py-2"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => toggleDisponibile(a.id)}
+                          title="Clicca per cambiare disponibilità"
+                        >
                           {a.disponibile ? "Disponibile" : "Non disponibile"}
                         </Badge>
                       </td>
+
                       <td>
                         <Button
                           variant="danger"
