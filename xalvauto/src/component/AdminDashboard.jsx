@@ -20,11 +20,15 @@ function AdminDashboard() {
   const [autoVendita, setAutoVendita] = useState([]);
   const [autoNoleggio, setAutoNoleggio] = useState([]);
 
+  const [editingId, setEditingId] = useState(null);
+
   const [marca, setMarca] = useState("");
   const [modello, setModello] = useState("");
   const [anno, setAnno] = useState("");
   const [prezzo, setPrezzo] = useState("");
   const [chilometri, setChilometri] = useState("");
+  const [cilindrata, setCilindrata] = useState("");
+  const [carburante, setCarburante] = useState("");
   const [descrizione, setDescrizione] = useState("");
   const [condizione, setCondizione] = useState("USATA");
   const [immagine, setImmagine] = useState(null);
@@ -65,11 +69,14 @@ function AdminDashboard() {
   }, []);
 
   const resetVendita = () => {
+    setEditingId(null);
     setMarca("");
     setModello("");
     setAnno("");
     setPrezzo("");
     setChilometri("");
+    setCilindrata("");
+    setCarburante("");
     setDescrizione("");
     setCondizione("USATA");
     setImmagine(null);
@@ -84,6 +91,21 @@ function AdminDashboard() {
     setImmagineNoleggio(null);
   };
 
+  const handleEditVendita = (auto) => {
+    setEditingId(auto.id);
+    setMarca(auto.marca);
+    setModello(auto.modello);
+    setAnno(auto.anno);
+    setPrezzo(auto.prezzo);
+    setChilometri(auto.chilometri);
+    setCilindrata(auto.cilindrata);
+    setCarburante(auto.carburante);
+    setDescrizione(auto.descrizione);
+    setCondizione(auto.condizione);
+    setImmagine(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleSubmitVendita = async (e) => {
     e.preventDefault();
     setMessaggio("");
@@ -91,35 +113,76 @@ function AdminDashboard() {
     setLoadingVendita(true);
 
     try {
-      const formData = new FormData();
-      formData.append("marca", marca);
-      formData.append("modello", modello);
-      formData.append("anno", anno);
-      formData.append("prezzo", prezzo);
-      formData.append("chilometri", chilometri);
-      formData.append("descrizione", descrizione);
-      formData.append("condizione", condizione);
-      formData.append("immagine", immagine);
+      if (editingId) {
+        const autoAttuale = autoVendita.find((a) => a.id === editingId);
 
-      const response = await fetch("http://localhost:8080/auto/upload", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+        const body = {
+          marca,
+          modello,
+          anno: Number(anno),
+          prezzo: Number(prezzo),
+          chilometri: Number(chilometri),
+          cilindrata: Number(cilindrata),
+          carburante,
+          descrizione,
+          condizione,
+          immagine: autoAttuale?.immagine || "",
+        };
 
-      if (!response.ok) {
-        throw new Error("Errore durante il salvataggio dell'auto");
+        const response = await fetch(`http://localhost:8080/auto/${editingId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+          throw new Error("Errore durante la modifica dell'auto");
+        }
+
+        await response.json();
+        setMessaggio("Auto modificata con successo!");
+        resetVendita();
+        fetchAutoVendita();
+      } else {
+        const formData = new FormData();
+        formData.append("marca", marca);
+        formData.append("modello", modello);
+        formData.append("anno", anno);
+        formData.append("prezzo", prezzo);
+        formData.append("chilometri", chilometri);
+        formData.append("cilindrata", cilindrata);
+        formData.append("carburante", carburante);
+        formData.append("descrizione", descrizione);
+        formData.append("condizione", condizione);
+        formData.append("immagine", immagine);
+
+        const response = await fetch("http://localhost:8080/auto/upload", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Errore durante il salvataggio dell'auto");
+        }
+
+        await response.json();
+        setMessaggio("Auto in vendita aggiunta con successo!");
+        resetVendita();
+        fetchAutoVendita();
       }
-
-      await response.json();
-      setMessaggio("Auto in vendita aggiunta con successo!");
-      resetVendita();
-      fetchAutoVendita();
     } catch (err) {
       console.error(err);
-      setErrore("Non sono riuscito ad aggiungere l'auto in vendita.");
+      setErrore(
+        editingId
+          ? "Non sono riuscito a modificare l'auto."
+          : "Non sono riuscito ad aggiungere l'auto in vendita."
+      );
     } finally {
       setLoadingVendita(false);
     }
@@ -223,7 +286,9 @@ function AdminDashboard() {
         <Tab eventKey="vendita" title="Auto in vendita">
           <Card className="shadow-sm mb-4">
             <Card.Body>
-              <h4 className="mb-4">Inserisci auto in vendita</h4>
+              <h4 className="mb-4">
+                {editingId ? "Modifica auto in vendita" : "Inserisci auto in vendita"}
+              </h4>
 
               <Form onSubmit={handleSubmitVendita}>
                 <Row className="g-3">
@@ -251,7 +316,7 @@ function AdminDashboard() {
                     </Form.Group>
                   </Col>
 
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group>
                       <Form.Label>Anno</Form.Label>
                       <Form.Control
@@ -263,7 +328,7 @@ function AdminDashboard() {
                     </Form.Group>
                   </Col>
 
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group>
                       <Form.Label>Prezzo</Form.Label>
                       <Form.Control
@@ -275,7 +340,7 @@ function AdminDashboard() {
                     </Form.Group>
                   </Col>
 
-                  <Col md={4}>
+                  <Col md={3}>
                     <Form.Group>
                       <Form.Label>Chilometri</Form.Label>
                       <Form.Control
@@ -284,6 +349,35 @@ function AdminDashboard() {
                         onChange={(e) => setChilometri(e.target.value)}
                         required
                       />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={3}>
+                    <Form.Group>
+                      <Form.Label>Cilindrata</Form.Label>
+                      <Form.Control
+                        type="number"
+                        value={cilindrata}
+                        onChange={(e) => setCilindrata(e.target.value)}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col md={6}>
+                    <Form.Group>
+                      <Form.Label>Carburante</Form.Label>
+                      <Form.Select
+                        value={carburante}
+                        onChange={(e) => setCarburante(e.target.value)}
+                        required
+                      >
+                        <option value="">Seleziona carburante</option>
+                        <option value="BENZINA">Benzina</option>
+                        <option value="DIESEL">Diesel</option>
+                        <option value="IBRIDA">Ibrida</option>
+                        <option value="ELETTRICA">Elettrica</option>
+                      </Form.Select>
                     </Form.Group>
                   </Col>
 
@@ -300,17 +394,19 @@ function AdminDashboard() {
                     </Form.Group>
                   </Col>
 
-                  <Col md={6}>
-                    <Form.Group>
-                      <Form.Label>Immagine</Form.Label>
-                      <Form.Control
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setImmagine(e.target.files[0])}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
+                  {!editingId && (
+                    <Col md={6}>
+                      <Form.Group>
+                        <Form.Label>Immagine</Form.Label>
+                        <Form.Control
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setImmagine(e.target.files[0])}
+                          required
+                        />
+                      </Form.Group>
+                    </Col>
+                  )}
 
                   <Col md={12}>
                     <Form.Group>
@@ -326,10 +422,20 @@ function AdminDashboard() {
                   </Col>
                 </Row>
 
-                <div className="mt-4">
+                <div className="mt-4 d-flex gap-2">
                   <Button type="submit" variant="dark" disabled={loadingVendita}>
-                    {loadingVendita ? "Salvataggio..." : "Aggiungi auto"}
+                    {loadingVendita
+                      ? "Salvataggio..."
+                      : editingId
+                      ? "Salva modifiche"
+                      : "Aggiungi auto"}
                   </Button>
+
+                  {editingId && (
+                    <Button type="button" variant="secondary" onClick={resetVendita}>
+                      Annulla modifica
+                    </Button>
+                  )}
                 </div>
               </Form>
             </Card.Body>
@@ -347,6 +453,8 @@ function AdminDashboard() {
                     <th>Modello</th>
                     <th>Anno</th>
                     <th>Prezzo</th>
+                    <th>Cilindrata</th>
+                    <th>Carburante</th>
                     <th>Condizione</th>
                     <th>Azioni</th>
                   </tr>
@@ -359,12 +467,22 @@ function AdminDashboard() {
                       <td>{a.modello}</td>
                       <td>{a.anno}</td>
                       <td>€ {a.prezzo}</td>
+                      <td>{a.cilindrata} cc</td>
+                      <td>{a.carburante}</td>
                       <td>
                         <Badge bg={a.condizione === "NUOVA" ? "success" : "secondary"}>
                           {a.condizione === "NUOVA" ? "Nuova" : "Usata"}
                         </Badge>
                       </td>
-                      <td>
+                      <td className="d-flex gap-2">
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() => handleEditVendita(a)}
+                        >
+                          Modifica
+                        </Button>
+
                         <Button
                           variant="danger"
                           size="sm"

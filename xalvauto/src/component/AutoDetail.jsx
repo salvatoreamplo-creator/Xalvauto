@@ -79,11 +79,12 @@ function AutoDetail() {
               </h2>
 
               <p><strong>Anno:</strong> {auto.anno}</p>
-              <p><strong>Prezzo:</strong> € {auto.prezzo}</p>
-              <p><strong>Chilometri:</strong> {auto.chilometri} km</p>
-
-              {auto.descrizione && (
-                <p><strong>Descrizione:</strong> {auto.descrizione}</p>
+<p><strong>Chilometri:</strong> {auto.chilometri} km</p>
+<p><strong>Cilindrata:</strong> {auto.cilindrata} cc</p>
+<p><strong>Carburante:</strong> {auto.carburante}</p>
+<p><strong>Condizione:</strong> {auto.condizione}</p>
+<p><strong>Prezzo:</strong> € {auto.prezzo}</p>
+<p><strong>Descrizione:</strong> {auto.descrizione}</p>
               )}
             </Card.Body>
           </Card>

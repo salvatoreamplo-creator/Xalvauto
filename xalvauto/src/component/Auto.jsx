@@ -9,7 +9,6 @@ import Badge from "react-bootstrap/Badge";
 import { Link } from "react-router-dom";
 
 function Auto() {
-
   const [auto, setAuto] = useState([]);
 
   const [marca, setMarca] = useState("");
@@ -17,7 +16,6 @@ function Auto() {
   const [prezzoMax, setPrezzoMax] = useState("");
 
   const fetchAuto = () => {
-
     let url = "http://localhost:8080/auto?";
 
     if (marca) url += `marca=${marca}&`;
@@ -25,10 +23,9 @@ function Auto() {
     if (prezzoMax) url += `prezzoMax=${prezzoMax}&`;
 
     fetch(url)
-      .then(res => res.json())
-      .then(data => setAuto(data))
-      .catch(err => console.error(err));
-
+      .then((res) => res.json())
+      .then((data) => setAuto(data))
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
@@ -37,15 +34,11 @@ function Auto() {
 
   return (
     <Container className="my-5">
-
       <h2 className="text-center mb-4">Catalogo Auto</h2>
 
-      {/* FILTRI */}
       <Card className="shadow-sm mb-4">
         <Card.Body>
-
           <Row className="g-3">
-
             <Col md={4}>
               <Form.Group>
                 <Form.Label>Marca</Form.Label>
@@ -82,30 +75,20 @@ function Auto() {
                 />
               </Form.Group>
             </Col>
-
           </Row>
 
           <div className="text-center mt-4">
-
             <Button variant="dark" onClick={fetchAuto}>
               Applica filtri
             </Button>
-
           </div>
-
         </Card.Body>
       </Card>
 
-      {/* LISTA AUTO */}
-
       <Row>
-
         {auto.map((a) => (
-
           <Col key={a.id} md={4} className="mb-4">
-
             <Card className="h-100 shadow-sm">
-
               <Card.Img
                 variant="top"
                 src={a.immagine}
@@ -113,7 +96,6 @@ function Auto() {
               />
 
               <Card.Body className="d-flex flex-column">
-
                 <Badge
                   bg={a.condizione === "NUOVA" ? "success" : "secondary"}
                   className="mb-2 align-self-start"
@@ -126,14 +108,10 @@ function Auto() {
                 </Card.Title>
 
                 <Card.Text>Anno: {a.anno}</Card.Text>
-
-                <Card.Text>
-                  Chilometri: {a.chilometri} km
-                </Card.Text>
-
-                <Card.Text className="fw-bold">
-                  € {a.prezzo}
-                </Card.Text>
+                <Card.Text>Chilometri: {a.chilometri} km</Card.Text>
+                <Card.Text>Cilindrata: {a.cilindrata} cc</Card.Text>
+                <Card.Text>Carburante: {a.carburante}</Card.Text>
+                <Card.Text className="fw-bold">€ {a.prezzo}</Card.Text>
 
                 <Button
                   as={Link}
@@ -143,17 +121,11 @@ function Auto() {
                 >
                   Vedi dettagli
                 </Button>
-
               </Card.Body>
-
             </Card>
-
           </Col>
-
         ))}
-
       </Row>
-
     </Container>
   );
 }
