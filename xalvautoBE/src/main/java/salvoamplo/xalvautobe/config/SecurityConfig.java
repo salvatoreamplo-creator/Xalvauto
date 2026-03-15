@@ -2,6 +2,7 @@ package salvoamplo.xalvautobe.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,13 +28,24 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/auto", "/auto/*").permitAll()
-                        .requestMatchers("/noleggio", "/noleggio/*").permitAll()
-                        .requestMatchers("/auto/upload").hasRole("ADMIN")
-                        .requestMatchers("/auto/**").hasRole("ADMIN")
-                        .requestMatchers("/noleggio/upload").hasRole("ADMIN")
-                        .requestMatchers("/noleggio/**").hasRole("ADMIN")
+
+                        // AUTO pubbliche
+                        .requestMatchers(HttpMethod.GET, "/auto/**").permitAll()
+
+                        // NOLEGGIO pubblico
+                        .requestMatchers(HttpMethod.GET, "/noleggio/**").permitAll()
+
+                        // AUTO admin
+                        .requestMatchers(HttpMethod.POST, "/auto/upload").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/auto/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/auto/**").hasRole("ADMIN")
+
+                        // NOLEGGIO admin
+                        .requestMatchers(HttpMethod.POST, "/noleggio/upload").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/noleggio/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
