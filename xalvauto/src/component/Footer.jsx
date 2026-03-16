@@ -7,30 +7,20 @@ function Footer() {
   return (
     <footer className="bg-light py-5 mt-5 border-top">
       <Container>
-
         <Row className="align-items-start text-center text-md-start">
-
           {/* CONTATTI */}
           <Col md={4} className="mb-4">
             <h5>XalvAuto</h5>
 
-            <p className="mb-1">
-              Via delle Gardenie 17
-            </p>
+            <p className="mb-1">Via delle Gardenie 17</p>
 
-            <p className="mb-1">
-              92019 Sciacca (AG)
-            </p>
+            <p className="mb-1">92019 Sciacca (AG)</p>
 
-            <p className="mb-1">
-              Tel: 3273590047
-            </p>
+            <p className="mb-1">Tel: 3273590047</p>
 
-            <p>
-              Email: xalvauto@gmail.com
-            </p>
+            <p>Email: xalvauto@gmail.com</p>
+            <p>Orari: Lun-Ven 9:00-19:00 sab 9:00-13:00</p>
           </Col>
-
 
           {/* MAPPA */}
           <Col md={4} className="mb-4 text-center">
@@ -46,10 +36,8 @@ function Footer() {
             ></iframe>
           </Col>
 
-
           {/* SOCIAL */}
           <Col md={4} className="mb-4 text-center text-md-end">
-
             <h5 className="mb-3">Seguici</h5>
 
             <a
@@ -78,9 +66,7 @@ function Footer() {
             >
               <FaTwitter size={22} />
             </a>
-
           </Col>
-
         </Row>
 
         <hr />
@@ -88,7 +74,6 @@ function Footer() {
         <div className="text-center text-muted">
           © XalvAuto {new Date().getFullYear()}
         </div>
-
       </Container>
     </footer>
   );

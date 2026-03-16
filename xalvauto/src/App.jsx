@@ -10,6 +10,7 @@ import Home from "./component/Home";
 import Noleggio from "./component/Noleggio";
 import AdminDashboard from "./component/AdminDashboard";
 import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
+import Servizi from "./component/Servizi";
 import "./App.css";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/auto" element={<Auto />} />
         <Route path="/auto/:id" element={<AutoDetail />} />
         <Route path="/noleggio" element={<Noleggio />} />
+        <Route path="/servizi" element={<Servizi />} />
         <Route
           path="/admin"
           element={

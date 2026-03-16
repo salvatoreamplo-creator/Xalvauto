@@ -37,10 +37,13 @@ function NavBar() {
             <Nav.Link as={Link} to="/noleggio">
               Noleggio
             </Nav.Link>
+            <Nav.Link as={Link} to="/servizi">
+              Servizi
+            </Nav.Link>
 
             {token && (
               <Nav.Link as={Link} to="/admin">
-                Admin 
+                Admin
               </Nav.Link>
             )}
           </Nav>
