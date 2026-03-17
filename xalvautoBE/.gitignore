@@ -34,7 +34,6 @@ build/
 
 node_modules/
 .vite/
-.idea/
 dist/
 
-env.properies
+env.properties
