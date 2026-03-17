@@ -11,6 +11,7 @@ import Noleggio from "./component/Noleggio";
 import AdminDashboard from "./component/AdminDashboard";
 import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
 import Servizi from "./component/Servizi";
+import FloatingContactBar from "./component/FloatingContactBar";
 import "./App.css";
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
       </Routes>
-
+      <FloatingContactBar />
       <Footer />
     </Router>
   );

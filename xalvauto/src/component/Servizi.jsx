@@ -23,8 +23,8 @@ function Servizi() {
             <Card.Body className="d-flex flex-column">
               <Card.Title>Vendita auto</Card.Title>
               <Card.Text>
-                Scopri il nostro parco auto in vendita, con modelli nuovi e usati
-                corredati da foto e dettagli tecnici.
+                Scopri il nostro parco auto in vendita, con modelli nuovi e
+                usati corredati da foto e dettagli tecnici.
               </Card.Text>
               <Button as={Link} to="/auto" variant="dark" className="mt-auto">
                 Scopri le auto
@@ -46,7 +46,12 @@ function Servizi() {
                 Scegli il servizio di noleggio auto per esigenze giornaliere o
                 settimanali, con veicoli pronti all’uso.
               </Card.Text>
-              <Button as={Link} to="/noleggio" variant="dark" className="mt-auto">
+              <Button
+                as={Link}
+                to="/noleggio"
+                variant="dark"
+                className="mt-auto"
+              >
                 Vai al noleggio
               </Button>
             </Card.Body>
@@ -63,8 +68,8 @@ function Servizi() {
             <Card.Body className="d-flex flex-column">
               <Card.Title>Finanziamenti</Card.Title>
               <Card.Text>
-                Offriamo soluzioni di finanziamento personalizzate per aiutarti ad
-                acquistare l’auto più adatta alle tue esigenze.
+                Offriamo soluzioni di finanziamento personalizzate per aiutarti
+                ad acquistare l’auto più adatta alle tue esigenze.
               </Card.Text>
               <Button variant="outline-dark" className="mt-auto">
                 Richiedi informazioni
@@ -87,7 +92,7 @@ function Servizi() {
                 assistenza tecnica per mantenere la tua auto sempre efficiente.
               </Card.Text>
               <Button variant="outline-dark" className="mt-auto">
-                Prenota un servizio
+                Contattacci
               </Button>
             </Card.Body>
           </Card>

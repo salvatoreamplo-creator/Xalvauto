@@ -7,6 +7,9 @@ import Card from "react-bootstrap/Card";
 import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
+
+import { FaWhatsapp, FaPhone } from "react-icons/fa";
 
 function AutoDetail() {
   const { id } = useParams();
@@ -14,6 +17,9 @@ function AutoDetail() {
   const [auto, setAuto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errore, setErrore] = useState("");
+
+  // inserisci il tuo numero
+  const telefono = "393273590047";
 
   useEffect(() => {
     fetch(`http://localhost:8080/auto/${id}`)
@@ -33,6 +39,16 @@ function AutoDetail() {
         setLoading(false);
       });
   }, [id]);
+
+  const chiama = () => {
+    window.location.href = `tel:+${telefono}`;
+  };
+
+  const whatsappLink = auto
+    ? `https://wa.me/${telefono}?text=Ciao%20sono%20interessato%20alla%20${encodeURIComponent(
+        auto.marca
+      )}%20${encodeURIComponent(auto.modello)}`
+    : "#";
 
   if (loading) {
     return (
@@ -55,6 +71,7 @@ function AutoDetail() {
   return (
     <Container className="my-5">
       <Row className="g-4">
+        {/* FOTO AUTO */}
         <Col md={6}>
           <img
             src={auto.immagine}
@@ -64,6 +81,7 @@ function AutoDetail() {
           />
         </Col>
 
+        {/* DETTAGLI AUTO */}
         <Col md={6}>
           <Card className="shadow-sm border-0">
             <Card.Body>
@@ -74,31 +92,69 @@ function AutoDetail() {
                 {auto.condizione === "NUOVA" ? "Nuova" : "Usata"}
               </Badge>
 
-              <h2 className="mb-3">
+              <h2 className="mb-2">
                 {auto.marca} {auto.modello}
               </h2>
 
-              <p>
-                <strong>Anno:</strong> {auto.anno}
-              </p>
-              <p>
-                <strong>Chilometri:</strong> {auto.chilometri} km
-              </p>
-              <p>
-                <strong>Cilindrata:</strong> {auto.cilindrata} cc
-              </p>
-              <p>
-                <strong>Carburante:</strong> {auto.carburante}
-              </p>
-              <p>
-                <strong>Condizione:</strong> {auto.condizione}
-              </p>
-              <p>
-                <strong>Prezzo:</strong> € {auto.prezzo}
-              </p>
+              {/* PREZZO EVIDENZIATO */}
+              <h3 className="text-success fw-bold mb-4">€ {auto.prezzo}</h3>
+
+              {/* CARATTERISTICHE AUTO */}
+              <Row className="mb-3">
+                <Col xs={6}>
+                  <strong>Anno</strong>
+                  <div>{auto.anno}</div>
+                </Col>
+
+                <Col xs={6}>
+                  <strong>Chilometri</strong>
+                  <div>{auto.chilometri} km</div>
+                </Col>
+
+                <Col xs={6} className="mt-2">
+                  <strong>Cilindrata</strong>
+                  <div>{auto.cilindrata} cc</div>
+                </Col>
+
+                <Col xs={6} className="mt-2">
+                  <strong>Carburante</strong>
+                  <div>{auto.carburante}</div>
+                </Col>
+              </Row>
+
               <p>
                 <strong>Descrizione:</strong> {auto.descrizione}
               </p>
+
+              
+
+              {/* SEZIONE TEST DRIVE */}
+              <Card className="mt-4 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <h4 className="mb-3">Interessato a questa auto?</h4>
+
+                  <p className="text-muted">
+                    Contattaci per maggiori informazioni oppure prenota un test
+                    drive con uno dei nostri consulenti.
+                  </p>
+
+                  <div className="d-flex justify-content-center gap-3">
+                    <Button variant="dark" onClick={chiama}>
+                      <FaPhone className="me-2" />
+                      Chiama ora
+                    </Button>
+
+                    <Button
+                      variant="success"
+                      href={whatsappLink}
+                      target="_blank"
+                    >
+                      <FaWhatsapp className="me-2" />
+                      WhatsApp
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
             </Card.Body>
           </Card>
         </Col>

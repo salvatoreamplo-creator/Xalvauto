@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/contatti/**").permitAll()
 
                         // AUTO pubbliche
                         .requestMatchers(HttpMethod.GET, "/auto/**").permitAll()

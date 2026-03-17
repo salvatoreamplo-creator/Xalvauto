@@ -1,0 +1,107 @@
+.floating-contact-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1050;
+}
+
+.floating-btn {
+  flex: 1;
+  text-decoration: none;
+  text-align: center;
+  padding: 14px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.call-btn {
+  background-color: #ffffff;
+  color: #2f5bd3;
+  border: 2px solid #2f5bd3;
+}
+
+.whatsapp-btn {
+  background-color: #25d366;
+  color: white;
+  border: none;
+}
+
+.contact-btn {
+  background-color: #ff7a00;
+  color: white;
+  border: none;
+}
+
+.floating-contact-desktop {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1050;
+}
+
+.desktop-contact-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 22px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.desktop-contact-btn.call-btn {
+  background-color: #ffffff;
+  color: #2f5bd3;
+  border: 2px solid #2f5bd3;
+}
+
+.desktop-contact-btn.whatsapp-btn {
+  background-color: #25d366;
+  color: white;
+}
+
+.desktop-contact-btn.contact-btn {
+  background-color: #ff7a00;
+  color: white;
+}
+
+@media (min-width: 992px) {
+  .floating-contact-mobile {
+    display: none;
+  }
+
+  .floating-contact-desktop {
+    display: flex;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .floating-contact-mobile {
+    display: flex;
+  }
+
+  .floating-contact-desktop {
+    display: none;
+  }
+}
+.floating-btn,
+.desktop-contact-btn {
+  border: none;
+  cursor: pointer;
+}

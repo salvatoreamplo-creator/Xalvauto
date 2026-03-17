@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+node_modules/
+.vite/
+.idea/
+dist/
+
+env.properies
