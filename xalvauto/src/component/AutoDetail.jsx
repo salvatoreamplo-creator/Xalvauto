@@ -8,37 +8,40 @@ import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-
 import { FaWhatsapp, FaPhone } from "react-icons/fa";
 
 function AutoDetail() {
   const { id } = useParams();
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
 
   const [auto, setAuto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errore, setErrore] = useState("");
 
-  // inserisci il tuo numero
   const telefono = "393273590047";
 
   useEffect(() => {
-    fetch(`http://localhost:8080/auto/${id}`)
-      .then((res) => {
-        if (!res.ok) {
+    const fetchAutoDetail = async () => {
+      try {
+        const response = await fetch(`${API_URL}/auto/${id}`);
+
+        if (!response.ok) {
           throw new Error("Auto non trovata");
         }
-        return res.json();
-      })
-      .then((data) => {
+
+        const data = await response.json();
         setAuto(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
         setErrore("Non sono riuscito a caricare i dettagli dell'auto.");
+      } finally {
         setLoading(false);
-      });
-  }, [id]);
+      }
+    };
+
+    fetchAutoDetail();
+  }, [id, API_URL]);
 
   const chiama = () => {
     window.location.href = `tel:+${telefono}`;
@@ -46,7 +49,7 @@ function AutoDetail() {
 
   const whatsappLink = auto
     ? `https://wa.me/${telefono}?text=Ciao%20sono%20interessato%20alla%20${encodeURIComponent(
-        auto.marca
+        auto.marca,
       )}%20${encodeURIComponent(auto.modello)}`
     : "#";
 
@@ -71,7 +74,6 @@ function AutoDetail() {
   return (
     <Container className="my-5">
       <Row className="g-4">
-        {/* FOTO AUTO */}
         <Col md={6}>
           <img
             src={auto.immagine}
@@ -81,7 +83,6 @@ function AutoDetail() {
           />
         </Col>
 
-        {/* DETTAGLI AUTO */}
         <Col md={6}>
           <Card className="shadow-sm border-0">
             <Card.Body>
@@ -96,10 +97,8 @@ function AutoDetail() {
                 {auto.marca} {auto.modello}
               </h2>
 
-              {/* PREZZO EVIDENZIATO */}
               <h3 className="text-success fw-bold mb-4">€ {auto.prezzo}</h3>
 
-              {/* CARATTERISTICHE AUTO */}
               <Row className="mb-3">
                 <Col xs={6}>
                   <strong>Anno</strong>
@@ -126,9 +125,6 @@ function AutoDetail() {
                 <strong>Descrizione:</strong> {auto.descrizione}
               </p>
 
-              
-
-              {/* SEZIONE TEST DRIVE */}
               <Card className="mt-4 border-0 shadow-sm">
                 <Card.Body className="text-center">
                   <h4 className="mb-3">Interessato a questa auto?</h4>
@@ -148,6 +144,7 @@ function AutoDetail() {
                       variant="success"
                       href={whatsappLink}
                       target="_blank"
+                      rel="noreferrer"
                     >
                       <FaWhatsapp className="me-2" />
                       WhatsApp

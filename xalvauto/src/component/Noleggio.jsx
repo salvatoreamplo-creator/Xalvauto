@@ -9,28 +9,34 @@ import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 
 function Noleggio() {
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const [autoNoleggio, setAutoNoleggio] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errore, setErrore] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/noleggio")
-      .then((res) => {
-        if (!res.ok) {
+    const fetchNoleggio = async () => {
+      try {
+        const response = await fetch(`${API_URL}/noleggio`);
+
+        if (!response.ok) {
           throw new Error("Errore nel caricamento delle auto a noleggio");
         }
-        return res.json();
-      })
-      .then((data) => {
+
+        const data = await response.json();
         setAutoNoleggio(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
         setErrore("Non sono riuscito a caricare le auto a noleggio.");
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchNoleggio();
+  }, [API_URL]);
 
   return (
     <Container className="my-5">

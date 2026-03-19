@@ -3,7 +3,8 @@ import { Navigate } from "react-router-dom";
 function ProtectedAdminRoute({ children }) {
   const token = localStorage.getItem("token");
 
-  if (!token) {
+  // controllo più robusto
+  if (!token || token === "undefined" || token === "null") {
     return <Navigate to="/login" replace />;
   }
 

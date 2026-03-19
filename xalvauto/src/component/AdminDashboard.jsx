@@ -13,6 +13,7 @@ import Badge from "react-bootstrap/Badge";
 
 function AdminDashboard() {
   const token = localStorage.getItem("token");
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
   const [messaggio, setMessaggio] = useState("");
   const [errore, setErrore] = useState("");
@@ -60,7 +61,12 @@ function AdminDashboard() {
   // =========================
   const fetchAutoVendita = async () => {
     try {
-      const response = await fetch("http://localhost:8080/auto");
+      const response = await fetch(`${API_URL}/auto`);
+
+      if (!response.ok) {
+        throw new Error("Errore nel caricamento auto vendita");
+      }
+
       const data = await response.json();
       setAutoVendita(data);
     } catch (err) {
@@ -71,7 +77,12 @@ function AdminDashboard() {
 
   const fetchAutoNoleggio = async () => {
     try {
-      const response = await fetch("http://localhost:8080/noleggio");
+      const response = await fetch(`${API_URL}/noleggio`);
+
+      if (!response.ok) {
+        throw new Error("Errore nel caricamento auto noleggio");
+      }
+
       const data = await response.json();
       setAutoNoleggio(data);
     } catch (err) {
@@ -155,17 +166,14 @@ function AdminDashboard() {
           immagine: autoAttuale?.immagine || "",
         };
 
-        const response = await fetch(
-          `http://localhost:8080/auto/${editingId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              ...authHeaders,
-            },
-            body: JSON.stringify(body),
+        const response = await fetch(`${API_URL}/auto/${editingId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...authHeaders,
           },
-        );
+          body: JSON.stringify(body),
+        });
 
         if (!response.ok) {
           throw new Error("Errore durante la modifica dell'auto");
@@ -186,9 +194,12 @@ function AdminDashboard() {
         formData.append("carburante", carburante);
         formData.append("descrizione", descrizione);
         formData.append("condizione", condizione);
-        formData.append("immagine", immagine);
 
-        const response = await fetch("http://localhost:8080/auto/upload", {
+        if (immagine) {
+          formData.append("immagine", immagine);
+        }
+
+        const response = await fetch(`${API_URL}/auto/upload`, {
           method: "POST",
           headers: {
             ...authHeaders,
@@ -233,9 +244,12 @@ function AdminDashboard() {
       formData.append("prezzoGiornaliero", prezzoGiornaliero);
       formData.append("prezzoSettimanale", prezzoSettimanale);
       formData.append("disponibile", disponibile);
-      formData.append("immagine", immagineNoleggio);
 
-      const response = await fetch("http://localhost:8080/noleggio/upload", {
+      if (immagineNoleggio) {
+        formData.append("immagine", immagineNoleggio);
+      }
+
+      const response = await fetch(`${API_URL}/noleggio/upload`, {
         method: "POST",
         headers: {
           ...authHeaders,
@@ -267,7 +281,7 @@ function AdminDashboard() {
     setErrore("");
 
     try {
-      const response = await fetch(`http://localhost:8080/auto/${id}`, {
+      const response = await fetch(`${API_URL}/auto/${id}`, {
         method: "DELETE",
         headers: {
           ...authHeaders,
@@ -294,7 +308,7 @@ function AdminDashboard() {
     setErrore("");
 
     try {
-      const response = await fetch(`http://localhost:8080/noleggio/${id}`, {
+      const response = await fetch(`${API_URL}/noleggio/${id}`, {
         method: "DELETE",
         headers: {
           ...authHeaders,
@@ -322,12 +336,12 @@ function AdminDashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/noleggio/${id}/toggle-disponibile`,
+        `${API_URL}/noleggio/${id}/toggle-disponibile`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...authHeaders,
           },
         },
       );

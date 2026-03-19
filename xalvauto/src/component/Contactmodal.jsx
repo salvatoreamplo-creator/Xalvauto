@@ -6,6 +6,9 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 function ContactModal({ show, handleClose }) {
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const [formData, setFormData] = useState({
     nome: "",
     email: "",
@@ -38,7 +41,7 @@ function ContactModal({ show, handleClose }) {
     setErrore("");
 
     try {
-      const response = await fetch("http://localhost:8080/contatti/invia", {
+      const response = await fetch(`${API_URL}/contatti/invia`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +113,12 @@ function ContactModal({ show, handleClose }) {
             />
           </Form.Group>
 
-          <Button type="submit" variant="dark" className="w-100" disabled={loading}>
+          <Button
+            type="submit"
+            variant="dark"
+            className="w-100"
+            disabled={loading}
+          >
             {loading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />

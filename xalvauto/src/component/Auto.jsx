@@ -9,23 +9,34 @@ import Badge from "react-bootstrap/Badge";
 import { Link } from "react-router-dom";
 
 function Auto() {
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const [auto, setAuto] = useState([]);
 
   const [marca, setMarca] = useState("");
   const [condizione, setCondizione] = useState("");
   const [prezzoMax, setPrezzoMax] = useState("");
 
-  const fetchAuto = () => {
-    let url = "http://localhost:8080/auto?";
+  const fetchAuto = async () => {
+    try {
+      let url = `${API_URL}/auto?`;
 
-    if (marca) url += `marca=${marca}&`;
-    if (condizione) url += `condizione=${condizione}&`;
-    if (prezzoMax) url += `prezzoMax=${prezzoMax}&`;
+      if (marca) url += `marca=${encodeURIComponent(marca)}&`;
+      if (condizione) url += `condizione=${encodeURIComponent(condizione)}&`;
+      if (prezzoMax) url += `prezzoMax=${encodeURIComponent(prezzoMax)}&`;
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setAuto(data))
-      .catch((err) => console.error(err));
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Errore nel caricamento delle auto");
+      }
+
+      const data = await response.json();
+      setAuto(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

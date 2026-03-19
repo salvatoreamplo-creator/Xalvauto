@@ -7,6 +7,9 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 
 function LoginPage() {
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -22,15 +25,15 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
-          password
-        })
+          password,
+        }),
       });
 
       if (!response.ok) {

@@ -13,27 +13,37 @@ import ReviewsSection from "./ReviewsSection";
 import Hero from "./Hero";
 
 function Home() {
+  const API_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const [auto, setAuto] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8080/auto")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchAuto = async () => {
+      try {
+        const response = await fetch(`${API_URL}/auto`);
+
+        if (!response.ok) {
+          throw new Error("Errore nel caricamento delle auto");
+        }
+
+        const data = await response.json();
         setAuto(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchAuto();
+  }, [API_URL]);
 
   return (
     <>
       <Hero />
 
-      {/* RICERCA VELOCE */}
       <section className="py-5 bg-light">
         <Container>
           <h2 className="text-center mb-4">Ricerca veloce</h2>
@@ -77,7 +87,6 @@ function Home() {
         </Container>
       </section>
 
-      {/* AUTO IN EVIDENZA */}
       <Container className="my-5">
         <h2 className="text-center mb-4">Auto in evidenza</h2>
 
@@ -97,32 +106,32 @@ function Home() {
                   />
 
                   <Card.Body className="d-flex flex-column">
-  <Badge
-    bg={a.condizione === "NUOVA" ? "success" : "secondary"}
-    className="mb-2 align-self-start"
-  >
-    {a.condizione === "NUOVA" ? "Nuova" : "Usata"}
-  </Badge>
+                    <Badge
+                      bg={a.condizione === "NUOVA" ? "success" : "secondary"}
+                      className="mb-2 align-self-start"
+                    >
+                      {a.condizione === "NUOVA" ? "Nuova" : "Usata"}
+                    </Badge>
 
-  <Card.Title>
-    {a.marca} {a.modello}
-  </Card.Title>
+                    <Card.Title>
+                      {a.marca} {a.modello}
+                    </Card.Title>
 
-  <Card.Text>Anno: {a.anno}</Card.Text>
-  <Card.Text>Chilometri: {a.chilometri} km</Card.Text>
-  <Card.Text>Cilindrata: {a.cilindrata} cc</Card.Text>
-  <Card.Text>Carburante: {a.carburante}</Card.Text>
-  <Card.Text className="fw-bold">€ {a.prezzo}</Card.Text>
+                    <Card.Text>Anno: {a.anno}</Card.Text>
+                    <Card.Text>Chilometri: {a.chilometri} km</Card.Text>
+                    <Card.Text>Cilindrata: {a.cilindrata} cc</Card.Text>
+                    <Card.Text>Carburante: {a.carburante}</Card.Text>
+                    <Card.Text className="fw-bold">€ {a.prezzo}</Card.Text>
 
-  <Button
-    as={Link}
-    to={`/auto/${a.id}`}
-    variant="outline-primary"
-    className="mt-auto"
-  >
-    Vedi dettagli
-  </Button>
-</Card.Body>
+                    <Button
+                      as={Link}
+                      to={`/auto/${a.id}`}
+                      variant="outline-primary"
+                      className="mt-auto"
+                    >
+                      Vedi dettagli
+                    </Button>
+                  </Card.Body>
                 </Card>
               </Col>
             ))}
