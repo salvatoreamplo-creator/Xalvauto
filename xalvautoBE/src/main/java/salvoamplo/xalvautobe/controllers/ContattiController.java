@@ -2,13 +2,16 @@ package salvoamplo.xalvautobe.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import salvoamplo.xalvautobe.payloads.ContattoDTO;
 import salvoamplo.xalvautobe.services.MailgunService;
 
 @RestController
 @RequestMapping("/contatti")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class ContattiController {
 
     private final MailgunService mailgunService;
