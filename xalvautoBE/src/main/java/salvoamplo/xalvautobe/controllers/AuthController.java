@@ -29,7 +29,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
-        if (!adminEmail.equals(request.getEmail()) || !adminPassword.equals(request.getPassword())) {
+        if (!"salvatoreamplo@gmail.com".equals(request.getEmail()) || !"salvo434".equals(request.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
         }
 
