@@ -17,7 +17,7 @@ public class AuthController {
 
     private final JwtService jwtService;
 
-    @Value("${admin.email}")
+    @Value("${ADMIN_EMAIL}")
     private String adminEmail;
 
     @Value("${PASS}")
