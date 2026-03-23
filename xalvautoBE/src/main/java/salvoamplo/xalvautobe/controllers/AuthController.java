@@ -1,10 +1,7 @@
 package salvoamplo.xalvautobe.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import salvoamplo.xalvautobe.payloads.AdminLoginRequest;
 import salvoamplo.xalvautobe.payloads.AdminLoginResponse;
@@ -20,7 +17,12 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/login")
+    @GetMapping("/test")
+    public String test() {
+        return "AUTH_OK_123";
+    }
+
+    @PostMapping("/admin-login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "TEST123456789");
     }
