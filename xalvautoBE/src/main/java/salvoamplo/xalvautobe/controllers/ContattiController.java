@@ -7,22 +7,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import salvoamplo.xalvautobe.payloads.ContattoDTO;
-import salvoamplo.xalvautobe.services.MailgunService;
+import salvoamplo.xalvautobe.services.ResendService;
 
 @RestController
 @RequestMapping("/contatti")
-
 public class ContattiController {
 
-    private final MailgunService mailgunService;
+    private final ResendService resendService;
 
-    public ContattiController(MailgunService mailgunService) {
-        this.mailgunService = mailgunService;
+    public ContattiController(ResendService resendService) {
+        this.resendService = resendService;
     }
 
     @PostMapping("/invia")
     public ResponseEntity<String> inviaMessaggio(@RequestBody ContattoDTO dto) {
-        mailgunService.inviaMessaggio(dto);
-        return new ResponseEntity<>("Messaggio inviato con successo", HttpStatus.OK);
+        try {
+            resendService.inviaMessaggio(dto);
+            return new ResponseEntity<>("Messaggio inviato con successo", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Errore invio: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
