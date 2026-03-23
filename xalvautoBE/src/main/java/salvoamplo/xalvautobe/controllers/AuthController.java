@@ -1,11 +1,7 @@
 package salvoamplo.xalvautobe.controllers;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import salvoamplo.xalvautobe.payloads.AdminLoginRequest;
 import salvoamplo.xalvautobe.payloads.AdminLoginResponse;
@@ -17,23 +13,24 @@ public class AuthController {
 
     private final JwtService jwtService;
 
-    @Value("${ADMIN_EMAIL}")
-    private String adminEmail;
-
-    @Value("${PASS}")
-    private String adminPassword;
-
     public AuthController(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
+    // 🔹 TEST endpoint
+    @GetMapping("/test")
+    public String test() {
+        return "AUTH_OK_123";
+    }
+
+    // 🔹 LOGIN TEST
     @PostMapping("/login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
-        if (!adminEmail.equals(request.getEmail()) || !adminPassword.equals(request.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
-        }
 
-        String token = jwtService.generateToken(request.getEmail());
-        return new AdminLoginResponse(token);
+        System.out.println("EMAIL: " + request.getEmail());
+        System.out.println("PASSWORD: " + request.getPassword());
+
+        // 🔴 FORZIAMO ERRORE PER TEST
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "TEST123");
     }
 }
