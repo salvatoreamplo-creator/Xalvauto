@@ -29,8 +29,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "TEST123");
-    }
+        if (!adminEmail.equals(request.getEmail()) || !adminPassword.equals(request.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
+        }
 
         String token = jwtService.generateToken(request.getEmail());
         return new AdminLoginResponse(token);
