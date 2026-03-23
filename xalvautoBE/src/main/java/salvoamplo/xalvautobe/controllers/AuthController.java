@@ -23,13 +23,17 @@ public class AuthController {
     @PostMapping("/login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
 
-        if (!"salvatoreamplo@gmail.com".equals(request.getEmail())
-                || !"salvo434".equals(request.getPassword())) {
+        String email = request.getEmail() == null ? "" : request.getEmail().trim();
+        String password = request.getPassword() == null ? "" : request.getPassword().trim();
 
+        System.out.println("EMAIL RICEVUTA = [" + email + "]");
+        System.out.println("PASSWORD RICEVUTA = [" + password + "]");
+
+        if (!"salvatoreamplo@gmail.com".equalsIgnoreCase(email) || !"salvo434".equals(password)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
         }
 
-        String token = jwtService.generateToken(request.getEmail());
+        String token = jwtService.generateToken(email);
         return new AdminLoginResponse(token);
     }
 }
