@@ -1,6 +1,8 @@
 package salvoamplo.xalvautobe.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import salvoamplo.xalvautobe.payloads.AdminLoginRequest;
 import salvoamplo.xalvautobe.payloads.AdminLoginResponse;
 import salvoamplo.xalvautobe.services.JwtService;
@@ -22,6 +24,14 @@ public class AuthController {
 
     @PostMapping("/admin-login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
-        throw new RuntimeException("SONO NEL CONTROLLER NUOVO");
+        String email = request.getEmail() == null ? "" : request.getEmail().trim();
+        String password = request.getPassword() == null ? "" : request.getPassword().trim();
+
+        if (!"salvatoreamplo@gmail.com".equalsIgnoreCase(email) || !"salvo434".equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenziali non valide");
+        }
+
+        String token = jwtService.generateToken(email);
+        return new AdminLoginResponse(token);
     }
 }

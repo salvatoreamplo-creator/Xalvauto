@@ -29,7 +29,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/auth/**").permitAll()
+                        // AUTH pubblica
+                        .requestMatchers(HttpMethod.GET, "/auth/test").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/admin-login").permitAll()
+
+                        // CONTATTI pubblici
                         .requestMatchers("/contatti/**").permitAll()
 
                         // AUTO pubbliche
@@ -48,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/noleggio/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/noleggio/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
