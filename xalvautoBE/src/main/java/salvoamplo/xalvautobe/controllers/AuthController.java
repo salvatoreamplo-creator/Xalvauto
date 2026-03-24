@@ -22,7 +22,6 @@ public class AuthController {
 
     @PostMapping("/admin-login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
-        String token = jwtService.generateToken("salvatoreamplo@gmail.com");
-        return new AdminLoginResponse(token);
+        throw new RuntimeException("SONO NEL CONTROLLER NUOVO");
     }
 }
