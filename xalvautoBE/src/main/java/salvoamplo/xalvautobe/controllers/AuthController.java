@@ -24,6 +24,10 @@ public class AuthController {
 
     @PostMapping("/admin-login")
     public AdminLoginResponse login(@RequestBody AdminLoginRequest request) {
+        System.out.println(">>> SONO ENTRATO IN /auth/admin-login");
+        System.out.println("EMAIL: [" + request.getEmail() + "]");
+        System.out.println("PASSWORD: [" + request.getPassword() + "]");
+
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "TEST123456789");
     }
 }
