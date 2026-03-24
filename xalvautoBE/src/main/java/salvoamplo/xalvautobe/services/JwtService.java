@@ -14,7 +14,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secret;
 
     private Key getSigningKey() {
@@ -26,7 +26,7 @@ public class JwtService {
                 .setSubject(email)
                 .claim("role", "ADMIN")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
