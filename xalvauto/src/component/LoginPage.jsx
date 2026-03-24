@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 function LoginPage() {
   const API_URL =
@@ -20,6 +21,7 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrore("");
     setMessaggio("");
     setLoading(true);
@@ -31,24 +33,35 @@ function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email,
-          password,
+          email: email.trim(),
+          password: password.trim(),
         }),
       });
 
+      // 👉 leggo SEMPRE la risposta
+      const text = await response.text();
+
+      console.log("RISPOSTA SERVER:", text);
+
       if (!response.ok) {
-        throw new Error("Credenziali non valide");
+        throw new Error(text || "Credenziali non valide");
       }
 
-      const data = await response.json();
+      const data = JSON.parse(text);
 
+      // 👉 salvo token
       localStorage.setItem("token", data.token);
+
       setMessaggio("Login effettuato con successo!");
 
-      navigate("/");
+      // 👉 redirect dopo piccolo delay
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+
     } catch (err) {
-      console.error(err);
-      setErrore("Email o password non valide.");
+      console.error("ERRORE LOGIN:", err);
+      setErrore(err.message || "Email o password non valide.");
     } finally {
       setLoading(false);
     }
@@ -92,7 +105,14 @@ function LoginPage() {
               className="w-100"
               disabled={loading}
             >
-              {loading ? "Accesso..." : "Accedi"}
+              {loading ? (
+                <>
+                  <Spinner size="sm" className="me-2" />
+                  Accesso...
+                </>
+              ) : (
+                "Accedi"
+              )}
             </Button>
           </Form>
         </Card.Body>
