@@ -105,3 +105,60 @@
   border: none;
   cursor: pointer;
 }
+.copy-message {
+  animation: fadeBounce 0.5s ease;
+  font-weight: 600;
+}
+
+@keyframes fadeBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.copy-message {
+  animation: fadeBounce 0.5s ease;
+  font-weight: 600;
+}
+
+@keyframes fadeBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.copy-message {
+  animation: fadeBounce 0.5s ease;
+  font-weight: 600;
+}
+
+@keyframes fadeBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

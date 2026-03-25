@@ -8,16 +8,23 @@ import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
-import { FaWhatsapp, FaPhone } from "react-icons/fa";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import {
+  FaWhatsapp,
+  FaPhone,
+  FaFacebookF,
+  FaLink,
+} from "react-icons/fa";
 
 function AutoDetail() {
   const { id } = useParams();
-  const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
   const [auto, setAuto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errore, setErrore] = useState("");
+  const [messaggioCopia, setMessaggioCopia] = useState("");
 
   const telefono = "393273590047";
 
@@ -47,11 +54,37 @@ function AutoDetail() {
     window.location.href = `tel:+${telefono}`;
   };
 
-  const whatsappLink = auto
+  const currentUrl = window.location.href;
+
+  const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+    currentUrl
+  )}`;
+
+  const whatsappShareUrl = auto
+    ? `https://wa.me/?text=${encodeURIComponent(
+        `Guarda questa auto su Xalvauto: ${auto.marca} ${auto.modello} - ${currentUrl}`
+      )}`
+    : `https://wa.me/?text=${encodeURIComponent(
+        `Guarda questa auto su Xalvauto: ${currentUrl}`
+      )}`;
+
+  const whatsappContactLink = auto
     ? `https://wa.me/${telefono}?text=Ciao%20sono%20interessato%20alla%20${encodeURIComponent(
-        auto.marca,
+        auto.marca
       )}%20${encodeURIComponent(auto.modello)}`
     : "#";
+
+  const copiaUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setMessaggioCopia("Link copiato!");
+      setTimeout(() => setMessaggioCopia(""), 2000);
+    } catch (error) {
+      console.error("Errore nella copia del link:", error);
+      setMessaggioCopia("Errore nella copia del link");
+      setTimeout(() => setMessaggioCopia(""), 2000);
+    }
+  };
 
   if (loading) {
     return (
@@ -86,12 +119,77 @@ function AutoDetail() {
         <Col md={6}>
           <Card className="shadow-sm border-0">
             <Card.Body>
-              <Badge
-                bg={auto.condizione === "NUOVA" ? "success" : "secondary"}
-                className="mb-3"
-              >
-                {auto.condizione === "NUOVA" ? "Nuova" : "Usata"}
-              </Badge>
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <Badge
+                  bg={auto.condizione === "NUOVA" ? "success" : "secondary"}
+                >
+                  {auto.condizione === "NUOVA" ? "Nuova" : "Usata"}
+                </Badge>
+
+                <div className="d-flex gap-2">
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip id="tooltip-url">Copia URL</Tooltip>}
+                  >
+                    <Button
+                      variant="light"
+                      onClick={copiaUrl}
+                      className="rounded-circle border d-flex align-items-center justify-content-center"
+                      style={{ width: "42px", height: "42px" }}
+                    >
+                      <FaLink />
+                    </Button>
+                  </OverlayTrigger>
+
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id="tooltip-facebook">
+                        Condividi su Facebook
+                      </Tooltip>
+                    }
+                  >
+                    <Button
+                      as="a"
+                      href={facebookShareUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      variant="light"
+                      className="rounded-circle border d-flex align-items-center justify-content-center"
+                      style={{ width: "42px", height: "42px" }}
+                    >
+                      <FaFacebookF />
+                    </Button>
+                  </OverlayTrigger>
+
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id="tooltip-whatsapp">
+                        Condividi su WhatsApp
+                      </Tooltip>
+                    }
+                  >
+                    <Button
+                      as="a"
+                      href={whatsappShareUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      variant="light"
+                      className="rounded-circle border d-flex align-items-center justify-content-center"
+                      style={{ width: "42px", height: "42px" }}
+                    >
+                      <FaWhatsapp />
+                    </Button>
+                  </OverlayTrigger>
+                </div>
+              </div>
+
+              {messaggioCopia && (
+                <p className="copy-message text-success mb-3">
+                  {messaggioCopia}
+                </p>
+              )}
 
               <h2 className="mb-2">
                 {auto.marca} {auto.modello}
@@ -134,7 +232,7 @@ function AutoDetail() {
                     drive con uno dei nostri consulenti.
                   </p>
 
-                  <div className="d-flex justify-content-center gap-3">
+                  <div className="d-flex justify-content-center gap-3 flex-wrap">
                     <Button variant="dark" onClick={chiama}>
                       <FaPhone className="me-2" />
                       Chiama ora
@@ -142,7 +240,7 @@ function AutoDetail() {
 
                     <Button
                       variant="success"
-                      href={whatsappLink}
+                      href={whatsappContactLink}
                       target="_blank"
                       rel="noreferrer"
                     >
