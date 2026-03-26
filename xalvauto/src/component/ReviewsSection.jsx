@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
@@ -15,10 +15,13 @@ function ReviewsSection() {
 
   const [reviews, setReviews] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const formRef = useRef(null);
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -33,6 +36,8 @@ function ReviewsSection() {
   const fetchReviews = async () => {
     try {
       setLoading(true);
+      setErrorMessage("");
+
       const response = await fetch(`${API_URL}/reviews`);
 
       if (!response.ok) {
@@ -154,6 +159,20 @@ function ReviewsSection() {
     }
   };
 
+  const handleToggleForm = () => {
+    const nextState = !showForm;
+    setShowForm(nextState);
+
+    if (nextState) {
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  };
+
   const renderStars = (rating, clickable = false) => {
     return [...Array(5)].map((_, index) => {
       const starNumber = index + 1;
@@ -178,204 +197,211 @@ function ReviewsSection() {
   return (
     <section className="py-5 bg-light">
       <Container>
-        <div className="text-center mb-5">
+        <div className="text-center mb-4">
           <h2 className="fw-bold">Cosa dicono i nostri clienti</h2>
           <p className="text-muted mb-2">Recensioni dei clienti XalvAuto</p>
 
           {reviews.length > 0 && (
-            <div className="d-flex justify-content-center align-items-center gap-2 text-warning fw-semibold">
-              <span>{renderStars(Math.round(averageRating))}</span>
+            <div className="d-flex justify-content-center align-items-center gap-2 text-warning fw-semibold mb-3">
+              <span>{renderStars(Math.round(Number(averageRating)))}</span>
               <span className="text-dark">
                 {averageRating}/5 su {reviews.length} recensioni
               </span>
             </div>
           )}
+
+          <Button
+            className="rounded-pill px-4 fw-semibold"
+            onClick={handleToggleForm}
+          >
+            {showForm ? "Chiudi recensione" : "Lascia una recensione"}
+          </Button>
         </div>
 
-        <Row className="g-4">
-          <Col lg={5}>
-            <Card className="border-0 shadow-sm rounded-4 h-100">
-              <Card.Body className="p-4">
-                <h4 className="fw-bold mb-3">Lascia una recensione</h4>
+        {showForm && (
+          <Row className="justify-content-center mb-4">
+            <Col lg={7} ref={formRef}>
+              <Card className="border-0 shadow-sm rounded-4">
+                <Card.Body className="p-4">
+                  <h4 className="fw-bold mb-3 text-center">Lascia una recensione</h4>
 
-                {successMessage && (
-                  <Alert variant="success">{successMessage}</Alert>
-                )}
+                  {successMessage && (
+                    <Alert variant="success">{successMessage}</Alert>
+                  )}
 
-                {errorMessage && (
-                  <Alert variant="danger">{errorMessage}</Alert>
-                )}
+                  {errorMessage && (
+                    <Alert variant="danger">{errorMessage}</Alert>
+                  )}
 
-                <Form onSubmit={handleSubmit}>
-                  <Row className="g-3">
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Nome</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="nome"
-                          value={formData.nome}
-                          onChange={handleChange}
-                          placeholder="Inserisci il nome"
-                          isInvalid={!!errors.nome}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.nome}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
+                  <Form onSubmit={handleSubmit}>
+                    <Row className="g-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Nome</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="nome"
+                            value={formData.nome}
+                            onChange={handleChange}
+                            placeholder="Nome"
+                            isInvalid={!!errors.nome}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.nome}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Col>
 
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>Cognome</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="cognome"
-                          value={formData.cognome}
-                          onChange={handleChange}
-                          placeholder="Inserisci il cognome"
-                          isInvalid={!!errors.cognome}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.cognome}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Cognome</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="cognome"
+                            value={formData.cognome}
+                            onChange={handleChange}
+                            placeholder="Cognome"
+                            isInvalid={!!errors.cognome}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.cognome}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Col>
 
-                    <Col xs={12}>
-                      <Form.Group>
-                        <Form.Label>Foto profilo (facoltativa)</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="foto"
-                          value={formData.foto}
-                          onChange={handleChange}
-                          placeholder="Incolla un URL immagine opzionale"
-                        />
-                      </Form.Group>
-                    </Col>
+                      <Col xs={12}>
+                        <Form.Group>
+                          <Form.Label>Foto profilo (facoltativa)</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="foto"
+                            value={formData.foto}
+                            onChange={handleChange}
+                            placeholder="Foto"
+                          />
+                        </Form.Group>
+                      </Col>
 
-                    <Col xs={12}>
-                      <Form.Group>
-                        <Form.Label>Valutazione</Form.Label>
-                        <div className="text-warning fs-5">
-                          {renderStars(formData.voto, true)}
+                      <Col xs={12}>
+                        <Form.Group>
+                          <Form.Label>Valutazione</Form.Label>
+                          <div className="text-warning fs-5">
+                            {renderStars(formData.voto, true)}
+                          </div>
+                          {errors.voto && (
+                            <div className="text-danger small mt-1">
+                              {errors.voto}
+                            </div>
+                          )}
+                        </Form.Group>
+                      </Col>
+
+                      <Col xs={12}>
+                        <Form.Group>
+                          <Form.Label>Recensione</Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={4}
+                            name="testo"
+                            value={formData.testo}
+                            onChange={handleChange}
+                            placeholder="Scrivi qui la tua esperienza..."
+                            isInvalid={!!errors.testo}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.testo}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Col>
+
+                      <Col xs={12}>
+                        <Button
+                          type="submit"
+                          className="w-100 rounded-pill fw-semibold"
+                          disabled={sending}
+                        >
+                          {sending ? "Pubblicazione..." : "Pubblica recensione"}
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+
+        {loading ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" />
+          </div>
+        ) : (
+          <>
+            <Row className="g-4">
+              {visibleReviews.map((review) => (
+                <Col xs={12} md={6} lg={4} key={review.id}>
+                  <Card className="border-0 shadow-sm rounded-4 h-100">
+                    <Card.Body className="p-4">
+                      <div className="d-flex align-items-start gap-3 mb-3">
+                        <div className="flex-shrink-0">
+                          {review.foto ? (
+                            <Image
+                              src={review.foto}
+                              roundedCircle
+                              width={60}
+                              height={60}
+                              style={{ objectFit: "cover" }}
+                            />
+                          ) : (
+                            <div
+                              className="d-flex align-items-center justify-content-center bg-secondary-subtle rounded-circle"
+                              style={{ width: "60px", height: "60px" }}
+                            >
+                              <FaUserCircle
+                                size={34}
+                                className="text-secondary"
+                              />
+                            </div>
+                          )}
                         </div>
-                        {errors.voto && (
-                          <div className="text-danger small mt-1">
-                            {errors.voto}
-                          </div>
-                        )}
-                      </Form.Group>
-                    </Col>
 
-                    <Col xs={12}>
-                      <Form.Group>
-                        <Form.Label>Recensione</Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={4}
-                          name="testo"
-                          value={formData.testo}
-                          onChange={handleChange}
-                          placeholder="Scrivi qui la tua esperienza..."
-                          isInvalid={!!errors.testo}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.testo}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
+                        <div className="w-100">
+                          <h6 className="fw-bold mb-1">
+                            {review.nome} {review.cognome}
+                          </h6>
 
-                    <Col xs={12}>
-                      <Button
-                        type="submit"
-                        className="w-100 rounded-pill fw-semibold"
-                        disabled={sending}
-                      >
-                        {sending ? "Pubblicazione..." : "Pubblica recensione"}
-                      </Button>
-                    </Col>
-                  </Row>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
+                          <small className="text-muted">
+                            {new Date(review.dataCreazione).toLocaleDateString(
+                              "it-IT"
+                            )}
+                          </small>
+                        </div>
+                      </div>
 
-          <Col lg={7}>
-            {loading ? (
-              <div className="text-center py-5">
-                <Spinner animation="border" />
+                      <div className="text-warning mb-2">
+                        {renderStars(review.voto)}
+                      </div>
+
+                      <p className="mb-0 text-secondary">{review.testo}</p>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+
+            {reviews.length > 5 && (
+              <div className="text-center mt-4">
+                <Button
+                  variant="outline-dark"
+                  className="rounded-pill px-4"
+                  onClick={() => setShowAll((prev) => !prev)}
+                >
+                  {showAll ? "Mostra meno" : "Mostra altre recensioni"}
+                </Button>
               </div>
-            ) : (
-              <>
-                <Row className="g-4">
-                  {visibleReviews.map((review) => (
-                    <Col xs={12} key={review.id}>
-                      <Card className="border-0 shadow-sm rounded-4 h-100">
-                        <Card.Body className="p-4">
-                          <div className="d-flex align-items-start gap-3">
-                            <div className="flex-shrink-0">
-                              {review.foto ? (
-                                <Image
-                                  src={review.foto}
-                                  roundedCircle
-                                  width={60}
-                                  height={60}
-                                  style={{ objectFit: "cover" }}
-                                />
-                              ) : (
-                                <div
-                                  className="d-flex align-items-center justify-content-center bg-secondary-subtle rounded-circle"
-                                  style={{ width: "60px", height: "60px" }}
-                                >
-                                  <FaUserCircle
-                                    size={34}
-                                    className="text-secondary"
-                                  />
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="w-100">
-                              <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-2">
-                                <h6 className="fw-bold mb-1 mb-md-0">
-                                  {review.nome} {review.cognome}
-                                </h6>
-
-                                <small className="text-muted">
-                                  {new Date(review.dataCreazione).toLocaleDateString("it-IT")}
-                                </small>
-                              </div>
-
-                              <div className="text-warning mb-2">
-                                {renderStars(review.voto)}
-                              </div>
-
-                              <p className="mb-0 text-secondary">{review.testo}</p>
-                            </div>
-                          </div>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-
-                {reviews.length > 5 && (
-                  <div className="text-center mt-4">
-                    <Button
-                      variant="outline-dark"
-                      className="rounded-pill px-4"
-                      onClick={() => setShowAll((prev) => !prev)}
-                    >
-                      {showAll ? "Mostra meno" : "Mostra altre recensioni"}
-                    </Button>
-                  </div>
-                )}
-              </>
             )}
-          </Col>
-        </Row>
+          </>
+        )}
       </Container>
     </section>
   );
