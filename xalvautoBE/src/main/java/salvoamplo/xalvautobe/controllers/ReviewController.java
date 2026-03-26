@@ -1,10 +1,9 @@
 package salvoamplo.xalvautobe.controllers;
 
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import salvoamplo.xalvautobe.entities.Review;
-import salvoamplo.xalvautobe.payloads.ReviewDTO;
 import salvoamplo.xalvautobe.services.ReviewService;
 
 import java.util.List;
@@ -33,9 +32,15 @@ public class ReviewController {
         return reviewService.getLatestFiveReviews();
     }
 
-    @PostMapping("")
+    @PostMapping(consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Review saveReview(@RequestBody @Valid ReviewDTO body) {
-        return reviewService.saveReview(body);
+    public Review saveReview(
+            @RequestParam("nome") String nome,
+            @RequestParam("cognome") String cognome,
+            @RequestParam("testo") String testo,
+            @RequestParam("voto") int voto,
+            @RequestParam(value = "foto", required = false) MultipartFile foto
+    ) {
+        return reviewService.saveReview(nome, cognome, testo, voto, foto);
     }
 }

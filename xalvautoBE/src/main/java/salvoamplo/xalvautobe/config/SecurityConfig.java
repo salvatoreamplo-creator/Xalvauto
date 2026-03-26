@@ -40,7 +40,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/prenotazioni-noleggio").permitAll()
 
-                        // REVIEWS PUBBLICHE
+                        // REVIEWS
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/reviews/**").permitAll()
 

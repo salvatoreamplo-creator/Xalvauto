@@ -33,15 +33,6 @@ public class Review {
     public Review() {
     }
 
-    public Review(String nome, String cognome, String testo, int voto, String foto, LocalDateTime dataCreazione) {
-        this.nome = nome;
-        this.cognome = cognome;
-        this.testo = testo;
-        this.voto = voto;
-        this.foto = foto;
-        this.dataCreazione = dataCreazione;
-    }
-
     public Long getId() {
         return id;
     }

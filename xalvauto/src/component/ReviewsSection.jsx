@@ -22,13 +22,15 @@ function ReviewsSection() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const formRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [formData, setFormData] = useState({
     nome: "",
     cognome: "",
     testo: "",
     voto: 5,
-    foto: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -77,6 +79,11 @@ function ReviewsSection() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file || null);
+  };
+
   const handleStarClick = (starValue) => {
     setFormData((prev) => ({
       ...prev,
@@ -120,18 +127,19 @@ function ReviewsSection() {
     try {
       setSending(true);
 
+      const data = new FormData();
+      data.append("nome", formData.nome.trim());
+      data.append("cognome", formData.cognome.trim());
+      data.append("testo", formData.testo.trim());
+      data.append("voto", formData.voto);
+
+      if (selectedFile) {
+        data.append("foto", selectedFile);
+      }
+
       const response = await fetch(`${API_URL}/reviews`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nome: formData.nome.trim(),
-          cognome: formData.cognome.trim(),
-          testo: formData.testo.trim(),
-          voto: formData.voto,
-          foto: formData.foto.trim(),
-        }),
+        body: data,
       });
 
       if (!response.ok) {
@@ -143,12 +151,17 @@ function ReviewsSection() {
         cognome: "",
         testo: "",
         voto: 5,
-        foto: "",
       });
 
+      setSelectedFile(null);
       setErrors({});
       setSuccessMessage("Recensione pubblicata con successo.");
       setShowAll(false);
+      setShowForm(false);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
 
       await fetchReviews();
     } catch (error) {
@@ -243,7 +256,7 @@ function ReviewsSection() {
                             name="nome"
                             value={formData.nome}
                             onChange={handleChange}
-                            placeholder="Nome"
+                            placeholder="Inserisci il nome"
                             isInvalid={!!errors.nome}
                           />
                           <Form.Control.Feedback type="invalid">
@@ -260,7 +273,7 @@ function ReviewsSection() {
                             name="cognome"
                             value={formData.cognome}
                             onChange={handleChange}
-                            placeholder="Cognome"
+                            placeholder="Inserisci il cognome"
                             isInvalid={!!errors.cognome}
                           />
                           <Form.Control.Feedback type="invalid">
@@ -273,11 +286,10 @@ function ReviewsSection() {
                         <Form.Group>
                           <Form.Label>Foto profilo (facoltativa)</Form.Label>
                           <Form.Control
-                            type="text"
-                            name="foto"
-                            value={formData.foto}
-                            onChange={handleChange}
-                            placeholder="Foto"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
                           />
                         </Form.Group>
                       </Col>
@@ -371,9 +383,7 @@ function ReviewsSection() {
                           </h6>
 
                           <small className="text-muted">
-                            {new Date(review.dataCreazione).toLocaleDateString(
-                              "it-IT"
-                            )}
+                            {new Date(review.dataCreazione).toLocaleDateString("it-IT")}
                           </small>
                         </div>
                       </div>
