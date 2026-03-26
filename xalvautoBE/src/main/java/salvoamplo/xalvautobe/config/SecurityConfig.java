@@ -29,22 +29,20 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
 
-
                         .requestMatchers(HttpMethod.GET, "/auth/test").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/admin-login").permitAll()
 
-
                         .requestMatchers("/contatti/**").permitAll()
-
 
                         .requestMatchers(HttpMethod.GET, "/auto/**").permitAll()
 
-
                         .requestMatchers(HttpMethod.GET, "/noleggio/**").permitAll()
-
 
                         .requestMatchers(HttpMethod.POST, "/prenotazioni-noleggio").permitAll()
 
+                        // REVIEWS PUBBLICHE
+                        .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/reviews/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/prenotazioni-noleggio").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/prenotazioni-noleggio/non-lette").hasRole("ADMIN")
@@ -54,16 +52,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/prenotazioni-noleggio/*/annulla").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/prenotazioni-noleggio/*/concludi").hasRole("ADMIN")
 
-
                         .requestMatchers(HttpMethod.POST, "/auto/upload").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/auto/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/auto/**").hasRole("ADMIN")
 
-
                         .requestMatchers(HttpMethod.POST, "/noleggio/upload").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/noleggio/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/noleggio/**").hasRole("ADMIN")
-
 
                         .anyRequest().permitAll()
                 )
