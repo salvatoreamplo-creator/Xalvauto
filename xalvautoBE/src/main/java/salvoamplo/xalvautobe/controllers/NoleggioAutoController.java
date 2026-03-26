@@ -11,7 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/noleggio")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://xalvauto.netlify.app"
+})
 public class NoleggioAutoController {
 
     @Autowired

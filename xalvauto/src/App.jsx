@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import NavBar from "./component/NavBar";
 import Footer from "./component/Footer";
 import Auto from "./component/Auto";
@@ -9,9 +10,11 @@ import Register from "./component/Register";
 import Home from "./component/Home";
 import Noleggio from "./component/Noleggio";
 import AdminDashboard from "./component/AdminDashboard";
+import AdminPrenotazioni from "./component/AdminPrenotazioni";
 import ProtectedAdminRoute from "./component/ProtectedAdminRoute";
 import Servizi from "./component/Servizi";
 import FloatingContactBar from "./component/FloatingContactBar";
+
 import "./App.css";
 
 function App() {
@@ -25,6 +28,9 @@ function App() {
         <Route path="/auto/:id" element={<AutoDetail />} />
         <Route path="/noleggio" element={<Noleggio />} />
         <Route path="/servizi" element={<Servizi />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<Register />} />
+
         <Route
           path="/admin"
           element={
@@ -33,9 +39,17 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/admin/prenotazioni"
+          element={
+            <ProtectedAdminRoute>
+              <AdminPrenotazioni />
+            </ProtectedAdminRoute>
+          }
+        />
       </Routes>
+
       <FloatingContactBar />
       <Footer />
     </Router>

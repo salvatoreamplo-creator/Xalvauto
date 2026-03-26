@@ -8,8 +8,7 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 
 function LoginPage() {
-  const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
   const navigate = useNavigate();
 
@@ -38,7 +37,6 @@ function LoginPage() {
         }),
       });
 
-      // 👉 leggo SEMPRE la risposta
       const text = await response.text();
 
       console.log("RISPOSTA SERVER:", text);
@@ -49,16 +47,17 @@ function LoginPage() {
 
       const data = JSON.parse(text);
 
-      // 👉 salvo token
       localStorage.setItem("token", data.token);
+
+      // salvo anche il ruolo admin
+      // se il backend non restituisce il ruolo, lo imposto direttamente
+      localStorage.setItem("ruolo", data.role || data.ruolo || "ADMIN");
 
       setMessaggio("Login effettuato con successo!");
 
-      // 👉 redirect dopo piccolo delay
       setTimeout(() => {
         navigate("/");
       }, 1000);
-
     } catch (err) {
       console.error("ERRORE LOGIN:", err);
       setErrore(err.message || "Email o password non valide.");
